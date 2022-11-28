@@ -2,14 +2,18 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AlertController, LoadingController } from '@ionic/angular';
+
 import { AuthService } from '../services/auth.service';
+import * as uuid from 'uuid';
+import { doc, setDoc } from 'firebase/firestore';
+import { Firestore } from '@angular/fire/firestore';
 
 @Component({
-  selector: 'app-login',
-  templateUrl: './login.page.html',
-  styleUrls: ['./login.page.scss'],
+  selector: 'app-signin',
+  templateUrl: './signin.page.html',
+  styleUrls: ['./signin.page.scss'],
 })
-export class LoginPage implements OnInit {
+export class SigninPage implements OnInit {
   credentials!: FormGroup;
 
   constructor(
@@ -17,7 +21,8 @@ export class LoginPage implements OnInit {
     private loadingController: LoadingController,
     private alertController: AlertController,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private fireStore: Firestore
   ) {}
 
   // Easy access for form fields
@@ -31,43 +36,26 @@ export class LoginPage implements OnInit {
 
   ngOnInit() {
     this.credentials = this.fb.group({
-      email: ['d1@gmail.com', [Validators.required, Validators.email]],
-      password: ['d1@gmail.com', [Validators.required, Validators.minLength(6)]],
+      id: [''],
+      email: ['', [Validators.required, Validators.email]],
+      nombres: ['', [Validators.required]],
+      apellidos: ['', [Validators.required]],
+      password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
 
   async register() {
-    this.router.navigate(['/signin']);
-    // const loading = await this.loadingController.create();
-    // await loading.present();
-
-    // const user = await this.authService.register(this.credentials.value);
-    // await loading.dismiss();
-
-    // if (user) {
-    //   this.router.navigateByUrl('/home', { replaceUrl: true });
-    // } else {
-    //   // this.showAlert('Registration failed', 'Please try again!');
-    //   const alert = this.alertController.create({
-    //     header: 'Login Error',
-    //     message: 'Error al iniciar sesion',
-    //     buttons: ['Ok'],
-    //   });
-    //   (await alert).present();
-    // }
-  }
-
-  async login() {
     const loading = await this.loadingController.create();
     await loading.present();
 
-    const user = await this.authService.login(this.credentials.value);
+    const user = await this.authService.register(this.credentials.value);
     await loading.dismiss();
 
     if (user) {
+      this.saveUser();
       this.router.navigateByUrl('/home', { replaceUrl: true });
     } else {
-      // this.showAlert('Login failed', 'Please try again!');
+      // this.showAlert('Registration failed', 'Please try again!');
       const alert = this.alertController.create({
         header: 'Login Error',
         message: 'Error al iniciar sesion',
@@ -75,6 +63,15 @@ export class LoginPage implements OnInit {
       });
       (await alert).present();
     }
+  }
+
+  saveUser(){
+    const myId = uuid.v4();
+    const nftDocRef = doc(this.fireStore, 'users/'+myId);
+    
+    this.credentials.controls['id'].setValue(myId);
+    setDoc(nftDocRef, this.credentials.value);
+    this.router.navigate(['/home']);
   }
 
   async showAlert(header: string, message: string) {

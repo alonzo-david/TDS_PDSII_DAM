@@ -1,4 +1,4 @@
-<ion-header [translucent]="true">
+<!-- <ion-header [translucent]="true">
   <ion-toolbar>
     <ion-title>
       Blank
@@ -17,4 +17,24 @@
     <strong>Ready to create an app?</strong>
     <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
   </div>
+</ion-content> -->
+
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Inicio
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-item *ngFor="let item of productos | async" (click)="viewDetail(item)">
+    <ion-label>
+      <h1>{{item.nombre}}</h1>
+      <p>{{item.descripcion.substring(0, 35)}}...</p>
+    </ion-label>
+    <ion-badge slot="end">{{item.precio}}</ion-badge>
+  </ion-item>
 </ion-content>

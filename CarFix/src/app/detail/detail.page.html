@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="secondary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-item fill="solid" class="ion-margin-top">
+    <ion-img src="https://docs-demo.ionic.io/assets/madison.jpg" alt="The Wisconsin State Capitol building in Madison, WI at night"></ion-img>
+  </ion-item>
+  <ion-item fill="solid" class="ion-margin-top">
+    <ion-label fixed>Nombre:</ion-label>
+    <ion-input
+      type="text"
+      placeholder="Nombre"
+      [(ngModel)]="document.nombre"
+      name="nombre"
+      [readonly]="true"
+    ></ion-input>
+  </ion-item>
+  <ion-item fill="solid" class="ion-margin-top">
+    <ion-label fixed>Descripcion:</ion-label>
+    <ion-textarea
+      type="text"
+      placeholder="Descripcion"
+      [(ngModel)]="document.descripcion"
+      name="descripcion"
+      [readonly]="true"
+    ></ion-textarea>
+  </ion-item>
+  <ion-item fill="solid" class="ion-margin-top">
+    <ion-label fixed>Precio: Q</ion-label>
+    <ion-input
+      type="number"
+      placeholder="Precio"
+      [(ngModel)]="document.precio"
+      name="precio"
+      [readonly]="true"
+    ></ion-input>
+  </ion-item>
+  <ion-list class="ion-margin-top">
+    <ion-item>
+      <ion-label>Cantidad:</ion-label>
+      <ion-select
+        name="Cantidad"
+        interface="action-sheet"
+        [(ngModel)]="document.cantidad"
+        (ngModelChange)="onChange($event)"
+      >
+        <ion-select-option
+          *ngFor="let cant of document.cantidad"
+          [value]="cant"
+        >
+          {{cant}}
+        </ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+  <ion-button expand="block" (click)="addCartShop()" class="ion-padding"
+    >Agregar al carrito</ion-button
+  >
+</ion-content>
