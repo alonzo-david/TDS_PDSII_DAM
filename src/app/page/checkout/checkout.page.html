@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-title>Checkout</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6">
+            <b>Nombre</b>
+          </ion-col>
+          <ion-col size="3" class="ion-text-center">
+            <b>Cantidad</b>
+          </ion-col>
+          <ion-col size="3" class="ion-text-end">
+            <b>Sub-Total</b>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item *ngFor="let p of cart" class="ion-text-wrap">
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6"> {{ p.name }} </ion-col>
+          <ion-col size="3" class="ion-align-self-center">
+            {{ p.amount }}
+          </ion-col>
+          <ion-col size="3" class="ion-text-end">
+            {{ p.amount * p.price | currency:'GT' }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="6"> </ion-col>
+          <ion-col size="3" class="ion-text-center"> </ion-col>
+          <ion-col size="3" class="ion-text-end"> </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+    <ion-item>
+      <ion-grid>
+        <ion-row>
+          <ion-col size="9"> Total: </ion-col>
+          <ion-col size="3" class="ion-text-end">
+            {{ getTotal() | currency:'GT' }}
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-item>
+  </ion-list>
+
+  <ion-button expand="full" (click)="finish()"> Finalizar </ion-button>
+</ion-content>

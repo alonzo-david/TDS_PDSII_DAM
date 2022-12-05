@@ -1,0 +1,46 @@
+<ion-header [translucent]="true">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Pedidos
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+<!-- 
+  <ion-fab vertical="top" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="openCart()" #cart>
+      <div class="cart-length"> {{ cartItemCount | async }} </div>
+      <ion-icon name="cart" class="cart-icon"></ion-icon>
+    </ion-fab-button>
+  </ion-fab> -->
+
+  <ion-list>
+    <ion-card *ngFor="let o of orders">
+      
+      <ion-card-header>
+        <ion-card-title> {{o.nameProduct}} </ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="8">
+            <ion-label color="secondary">
+              <b> {{ o.price | currency:'GT'}} </b>
+            </ion-label>
+          </ion-col>          
+        </ion-row>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="8">
+            <ion-label color="secondary">
+              <b> Cantidad: {{ o.amount }} </b>
+            </ion-label>
+          </ion-col>          
+        </ion-row>
+      </ion-card-content>
+
+    </ion-card>
+  </ion-list>
+</ion-content>
