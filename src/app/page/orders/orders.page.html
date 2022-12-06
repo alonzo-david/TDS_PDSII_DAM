@@ -22,25 +22,20 @@
     <ion-card *ngFor="let o of orders">
       
       <ion-card-header>
-        <ion-card-title> {{o.nameProduct}} </ion-card-title>
+        <ion-label color="secondary">
+          <b> Orden No. </b>
+        </ion-label>
+        <ion-card-title> {{o}} </ion-card-title>
       </ion-card-header>
       <ion-card-content>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="8">
-            <ion-label color="secondary">
-              <b> {{ o.price | currency:'GT'}} </b>
-            </ion-label>
-          </ion-col>          
-        </ion-row>
-        <ion-row class="ion-align-items-center">
-          <ion-col size="8">
-            <ion-label color="secondary">
-              <b> Cantidad: {{ o.amount }} </b>
-            </ion-label>
-          </ion-col>          
+        <ion-row class="ion-align-items-center">          
+          <ion-col size="12" class="ion-text-right">
+            <ion-button fill="clear" (click)="toDetails(o)">
+              Ver <ion-icon name="chevron-forward-circle-outline"></ion-icon>
+            </ion-button>
+          </ion-col>
         </ion-row>
       </ion-card-content>
-
     </ion-card>
   </ion-list>
 </ion-content>

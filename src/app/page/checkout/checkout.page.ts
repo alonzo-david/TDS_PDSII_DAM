@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Firestore } from '@angular/fire/firestore';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { AlertController } from '@ionic/angular';
+import { AlertController, NavController } from '@ionic/angular';
 import { doc, setDoc } from 'firebase/firestore';
 import { AuthService, IAuth } from 'src/app/services/auth.service';
 import { CartService, Order, Product } from 'src/app/services/cart.service';
@@ -22,6 +22,7 @@ export class CheckoutPage implements OnInit {
     nameProduct: '',
     amount: 0,
     price: 0,
+    idGroup: '',
   });
   auth: IAuth;
   product: Product;
@@ -33,6 +34,7 @@ export class CheckoutPage implements OnInit {
     private router: Router,
     private fireStore: Firestore,
     private fb: FormBuilder,
+    private navController: NavController
   ) {}
 
   ngOnInit() {
@@ -45,9 +47,11 @@ export class CheckoutPage implements OnInit {
 
   async finish() {
     //this.credentials.controls['id']
-    
+
     this.auth = this.authService.getAuth();
-    
+    let collection: Order[] = [];
+
+    const groupId = uuid.v4();
     this.cart.forEach((data) => {
       const myId = uuid.v4();
       this.formOrder.controls['id'].setValue(myId);
@@ -56,6 +60,7 @@ export class CheckoutPage implements OnInit {
       this.formOrder.controls['price'].setValue(data.price);
       this.formOrder.controls['amount'].setValue(data.amount);
       this.formOrder.controls['nameProduct'].setValue(data.name);
+      this.formOrder.controls['idGroup'].setValue(groupId);
 
       const nftDocRef = doc(this.fireStore, 'orders/' + myId);
       setDoc(nftDocRef, this.formOrder.value);
@@ -63,6 +68,7 @@ export class CheckoutPage implements OnInit {
       this.cartService.updateAmountProduct(data);
       //this.router.navigate(['/home']);
     });
+
     
 
     let alert = await this.alertController.create({
@@ -70,10 +76,28 @@ export class CheckoutPage implements OnInit {
       message: 'Gracias por tu preferencia.',
       buttons: ['OK'],
     });
+    // alert.present().then(() => {
+    //   this.cartService.clearCart();
+    //   // this.router.navigateByUrl('/home', { replaceUrl: true });
+
+    //   // this.redirectTo('/home');
+
+    //   // this.router.navigate(['/home']).then(() => {
+    //   //   window.location.reload();
+    //   // });
+
+    //   this.router.navigateByUrl('/home', { replaceUrl: true });
+    // });
+
     alert.present().then(() => {
       this.cartService.clearCart();
-      this.router.navigate(['/home']);
+      this.router.navigateByUrl('/home');
     });
   }
 
+  redirectTo(uri: string) {
+    this.router
+      .navigateByUrl('/home', { skipLocationChange: true })
+      .then(() => this.router.navigate([uri]));
+  }
 }

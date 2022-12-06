@@ -15,10 +15,10 @@
           <ion-col size="6">
             <b>Nombre</b>
           </ion-col>
-          <ion-col size="3" class="ion-text-center">
-            <b>Cantidad</b>
+          <ion-col size="2" class="ion-text-center">
+            <b>Cant</b>
           </ion-col>
-          <ion-col size="3" class="ion-text-end">
+          <ion-col size="4" class="ion-text-end">
             <b>Sub-Total</b>
           </ion-col>
         </ion-row>
@@ -32,7 +32,7 @@
             {{ p.amount }}
           </ion-col>
           <ion-col size="3" class="ion-text-end">
-            {{ p.amount * p.price | currency:'GT' }}
+            {{ p.amount * p.price }}
           </ion-col>
         </ion-row>
       </ion-grid>
@@ -49,8 +49,8 @@
     <ion-item>
       <ion-grid>
         <ion-row>
-          <ion-col size="9"> Total: </ion-col>
-          <ion-col size="3" class="ion-text-end">
+          <ion-col size="8"> Total: </ion-col>
+          <ion-col size="4" class="ion-text-end">
             {{ getTotal() | currency:'GT' }}
           </ion-col>
         </ion-row>

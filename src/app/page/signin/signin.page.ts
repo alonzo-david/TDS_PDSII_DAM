@@ -54,6 +54,7 @@ export class SigninPage implements OnInit {
       lastname: ['', [Validators.required]],
       address: ['', [Validators.required]],
       password: ['', [Validators.required, Validators.minLength(6)]],
+      avatar: ['https://ibb.co/8mJD1KP'],
     });
   }
 

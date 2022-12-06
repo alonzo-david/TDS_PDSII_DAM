@@ -64,6 +64,7 @@ export class AuthService {
       this.auth.id = filter.id;
       this.auth.lastname = filter.lastname;
       this.auth.name = filter.name;
+      this.auth.avatar = filter.avatar;
 
       sessionStorage.setItem('user', JSON.stringify(this.auth));
     });

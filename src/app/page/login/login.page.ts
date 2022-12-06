@@ -21,10 +21,15 @@ export class LoginPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.credentials = this.fb.group({
-      email: ['elopez@gmail.com', [Validators.required, Validators.email]],
-      password: ['123456', [Validators.required, Validators.minLength(6)]],
-    });
+    if(sessionStorage.getItem("user") !== null){
+      this.router.navigate(['/home']);
+    }else{
+      this.credentials = this.fb.group({
+        email: ['elopez@gmail.com', [Validators.required, Validators.email]],
+        password: ['123456', [Validators.required, Validators.minLength(6)]],
+      });
+    }
+    
   }
 
   register(){

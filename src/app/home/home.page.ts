@@ -1,5 +1,5 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { BehaviorSubject } from 'rxjs';
 import { CartModalPage } from '../page/cart-modal/cart-modal.page';
 import { CartService, Product } from '../services/cart.service';
@@ -23,27 +23,28 @@ export class HomePage implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.cartService.setProducts();
+    //this.cartService.setProducts();
     this.products = this.cartService.getProducts();
     this.cart = this.cartService.getCart();
     this.cartItemCount = this.cartService.getCartItemCount();
   }
+  
 
   addToCart(product) {
     this.cartService.addProduct(product);
-    this.animateCSS('tada', true);
+    //this.animateCSS('tada', true);
   }
 
   async openCart() {
-    this.animateCSS('bounceOutLeft', true);
+    //this.animateCSS('bounceOutLeft', true);
 
     let modal = await this.modalCtrl.create({
       component: CartModalPage,
       cssClass: 'cart-modal',
     });
     modal.onWillDismiss().then(() => {
-      this.fab.nativeElement.classList.remove('animated', 'bounceOutLeft');
-      this.animateCSS('bounceInLeft');
+      //this.fab.nativeElement.classList.remove('animated', 'bounceOutLeft');
+      //this.animateCSS('bounceInLeft');
     });
     modal.present();
   }
@@ -61,4 +62,6 @@ export class HomePage implements OnInit {
     }
     node.addEventListener('animationend', handleAnimationEnd);
   }
+
+  
 }

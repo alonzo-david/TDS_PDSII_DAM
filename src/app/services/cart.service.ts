@@ -1,7 +1,17 @@
 import { Injectable } from '@angular/core';
 import { collectionData, Firestore } from '@angular/fire/firestore';
-import { AlertController } from '@ionic/angular';
-import { collection, doc, getDoc, getDocs, onSnapshot, query, setDoc, updateDoc, where } from 'firebase/firestore';
+import { AlertController, ToastController } from '@ionic/angular';
+import {
+  collection,
+  doc,
+  getDoc,
+  getDocs,
+  onSnapshot,
+  query,
+  setDoc,
+  updateDoc,
+  where,
+} from 'firebase/firestore';
 import { BehaviorSubject, from } from 'rxjs';
 
 export interface Product {
@@ -14,20 +24,23 @@ export interface Product {
   availability?: number;
 }
 
-export interface Order{
+export interface Order {
   id?: string;
   idProduct?: string;
   idUser?: string;
   nameProduct?: string;
   amount?: number;
   price?: number;
+  idGroup?: string;
 }
 @Injectable({
   providedIn: 'root',
 })
 export class CartService {
   data: Product[] = [];
-  orders: Order[] = [];
+  details: Order[] = [];
+  orders = [];
+
   // data: Product[] = [
   //   {
   //     id: 0,
@@ -72,12 +85,13 @@ export class CartService {
 
   constructor(
     private alertController: AlertController,
-    private fireStore: Firestore,
-  ) {
-    
-  }
+    private fireStore: Firestore,    
+    private toastService: ToastController,
+  ) {}
 
-  async setOrders(idUser){
+  async setOrders(idUser) {
+    this.orders = [];
+    let collectionOrder = [];
 
     const q = query(
       collection(this.fireStore, 'orders'),
@@ -88,29 +102,56 @@ export class CartService {
       // doc.data() is never undefined for query doc snapshots
       console.log(doc.id, ' => ', doc.data());
       const filter = doc.data() as Order;
-      
-      this.orders.push(filter);
+
+      collectionOrder.push(filter.idGroup);
     });
+
+    collectionOrder = collectionOrder.filter((item, index, array) => array.indexOf(item) === index);
+    this.orders.push(...collectionOrder);
+
   }
 
-  getOrders(){
+  getOrders() {
     return this.orders;
   }
 
-  async updateAmountProduct(cart){
+  async setDetails(idUser, idGroupOrder) {
+    this.details = [];
+    const q = query(
+      collection(this.fireStore, 'orders'),
+      where('idUser', '==', idUser), where('idGroup', '==', idGroupOrder)
+    );
+    const querySnapshot = await getDocs(q);
+    querySnapshot.forEach((doc) => {
+      // doc.data() is never undefined for query doc snapshots
+      console.log(doc.id, ' => ', doc.data());
+      const filter = doc.data() as Order;
 
+      this.details.push(filter);
+    });
+  }
+
+  getDetails(){
+    return this.details;
+  }
+
+  getTotalDetails(){
+    return this.details.reduce((accumulator, detail) => accumulator + detail.price, 0);
+  }
+
+  async updateAmountProduct(cart) {
     //import { doc, onSnapshot } from "firebase/firestore";
     const product = this.getProductById(cart.id);
-    const productRef = doc(this.fireStore, "products", cart.id);
+    const productRef = doc(this.fireStore, 'products', cart.id);
 
     // Set the "capital" field of the city 'DC'
     await updateDoc(productRef, {
       availability: product.availability - cart.amount,
     });
-    
   }
 
   async setProducts() {
+    //this.data = [];
     const q = query(
       collection(this.fireStore, 'products'),
       where('availability', '>=', 1)
@@ -118,14 +159,15 @@ export class CartService {
     const querySnapshot = await getDocs(q);
     querySnapshot.forEach((doc) => {
       // doc.data() is never undefined for query doc snapshots
-      console.log(doc.id, ' => ', doc.data());
+      //console.log(doc.id, ' => ', doc.data());
       const filter = doc.data() as Product;
-      
+
       this.data.push(filter);
     });
   }
 
-  getProducts() {  
+  getProducts() {
+    this.setProducts();
     console.log('products ', this.data);
     return this.data;
   }
@@ -142,7 +184,8 @@ export class CartService {
     return this.cartItemCount;
   }
 
-  clearCart(){
+  clearCart() {
+    this.data = [];
     this.cart = [];
     this.cartItemCount.next(0);
   }
@@ -159,7 +202,10 @@ export class CartService {
           added = true;
           break;
         } else {
-          this.showAlert('¡Importante!', 'Ha llegado al limite del stock permitido.')
+          this.toastAlert(
+            'Ha llegado al limite del stock permitido.',
+            'warning'
+          );
           isAvailability = false;
           break;
         }
@@ -168,6 +214,7 @@ export class CartService {
     if (!added && isAvailability) {
       product.amount = 1;
       this.cart.push(product);
+      this.toastAlert('Agregado correctamente', 'success');
     }
 
     if (isAvailability) this.cartItemCount.next(this.cartItemCount.value + 1);
@@ -179,6 +226,7 @@ export class CartService {
         p.amount -= 1;
         if (p.amount == 0) {
           this.cart.splice(index, 1);
+          this.toastAlert('Producto eliminado', 'danger');
         }
       }
     }
@@ -192,6 +240,7 @@ export class CartService {
         this.cart.splice(index, 1);
       }
     }
+    this.toastAlert('Producto eliminado', 'danger');
   }
 
   async showAlert(header: string, message: string) {
@@ -201,5 +250,15 @@ export class CartService {
       buttons: ['OK'],
     });
     await alert.present();
+  }
+
+  async toastAlert(message, color){
+    const toast = await this.toastService.create({
+      message,
+      duration: 2000,
+      color,
+    });
+
+    await toast.present();
   }
 }

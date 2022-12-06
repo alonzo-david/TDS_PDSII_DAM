@@ -35,11 +35,16 @@ const routes: Routes = [
     path: 'profile',
     loadChildren: () => import('./page/profile/profile.module').then( m => m.ProfilePageModule)
   },
+  {
+    path: 'init',
+    loadChildren: () => import('./page/init/init.module').then( m => m.InitPageModule)
+  },
 ];
 
 @NgModule({
   imports: [
     RouterModule.forRoot(routes, { preloadingStrategy: PreloadAllModules })
+    // RouterModule.forRoot(routes, { onSameUrlNavigation: 'reload' })
   ],
   exports: [RouterModule]
 })
