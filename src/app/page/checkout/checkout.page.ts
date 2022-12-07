@@ -23,6 +23,7 @@ export class CheckoutPage implements OnInit {
     amount: 0,
     price: 0,
     idGroup: '',
+    imageProduct: '',
   });
   auth: IAuth;
   product: Product;
@@ -61,6 +62,7 @@ export class CheckoutPage implements OnInit {
       this.formOrder.controls['amount'].setValue(data.amount);
       this.formOrder.controls['nameProduct'].setValue(data.name);
       this.formOrder.controls['idGroup'].setValue(groupId);
+      this.formOrder.controls['imageProduct'].setValue(data.image);
 
       const nftDocRef = doc(this.fireStore, 'orders/' + myId);
       setDoc(nftDocRef, this.formOrder.value);

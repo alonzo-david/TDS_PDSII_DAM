@@ -32,6 +32,7 @@ export interface Order {
   amount?: number;
   price?: number;
   idGroup?: string;
+  imageProduct?: string;
 }
 @Injectable({
   providedIn: 'root',
